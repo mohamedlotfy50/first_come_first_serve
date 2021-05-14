@@ -1,6 +1,7 @@
-import 'package:first_come_first_serve/data/process_methods.dart';
-import 'package:first_come_first_serve/presentaion/widget/table.dart';
 import 'package:flutter/material.dart';
+
+import '../data/process_methods.dart';
+import 'widget/table.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shortest Remaining Time First'),
+        title: Text('First come First Serve'),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -32,8 +33,8 @@ class _MainScreenState extends State<MainScreen> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _processMethods
-                              .createProcesses(int.parse(_controller.text));
+                          _processMethods.createProcesses(
+                              int.tryParse(_controller.text) ?? 0);
                         });
                         Navigator.pop(context);
                       },
@@ -59,13 +60,48 @@ class _MainScreenState extends State<MainScreen> {
       body: ListView(
         children: [
           ProcessesTable(
-            processes: _processMethods.porcess,
+            processes: _processMethods.process,
+          ),
+          if (_processMethods.averageTurnAroundTime > 0)
+            Text(
+                'AverageTurnAroundTime = ${_processMethods.averageTurnAroundTime} units'),
+          if (_processMethods.averageWaitingTime > 0)
+            Text(
+                'AverageWaitingTime = ${_processMethods.averageWaitingTime} units'),
+          Container(
+            height: 100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ..._processMethods.chart.map((e) {
+                  if (e.processID == null) {
+                    return Placeholder();
+                  }
+                  return Container(
+                    child: Row(
+                      children: [
+                        Text('${e.from}'),
+                        SizedBox(width: 5),
+                        Text('p${e.processID ?? "no"}'),
+                        SizedBox(width: 5),
+                        Text('${e.to}'),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ],
+            ),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(isplaying ? Icons.stop : Icons.play_arrow),
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            _processMethods.sortProcesses();
+            _processMethods.firstcomefirstServe();
+          });
+        },
       ),
     );
   }

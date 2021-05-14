@@ -1,5 +1,6 @@
-import 'package:first_come_first_serve/presentaion/main_screan.dart';
 import 'package:flutter/material.dart';
+
+import 'presentaion/main_screan.dart';
 
 void main() {
   runApp(MyApp());
