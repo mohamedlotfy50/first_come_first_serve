@@ -4,19 +4,15 @@ class Process {
   final int id;
   final int arrivalTime;
   int burstTime;
-  int completionTime;
   int turnAroundTime;
   int waitingTime;
-  int responseTime;
 
   Process({
     @required this.id,
     @required this.arrivalTime,
     this.burstTime,
-    this.completionTime,
-    this.turnAroundTime,
-    this.waitingTime,
-    this.responseTime,
+    this.turnAroundTime = 0,
+    this.waitingTime = 0,
   });
   bool isShorter(Process process) {
     return burstTime > process.burstTime;
